@@ -316,10 +316,12 @@ function containsSubstring(str, substring) {
  *   countVowels('XYZ') => 1
  */
 function countVowels(str) {
+  const vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
   let result = 0;
-  for (let i = 0; i < str.length; i += 1) {
-    if (str[i].charCodeAt() % 2 === 0) {
-      result += str[i];
+  const lowerStr = str.toLowerCase();
+  for (let i = 0; i < lowerStr.length; i += 1) {
+    if (vowels.includes(lowerStr.toLowerCase()[i])) {
+      result += 1;
     }
   }
   return result;
@@ -339,7 +341,12 @@ function countVowels(str) {
  *   isPalindrome('No lemon, no melon') => true
  */
 function isPalindrome(str) {
-  const lowerStr = str.toLowerCase();
+  const lowerStr = str
+    .toLowerCase()
+    .replaceAll(' ', '')
+    .replaceAll(',', '')
+    .replace('!', '')
+    .replace('?', '');
   return lowerStr === lowerStr.split('').reverse().join('');
 }
 
@@ -355,8 +362,8 @@ function isPalindrome(str) {
  *   findLongestWord('A long and winding road') => 'winding'
  *   findLongestWord('No words here') => 'words'
  */
-function findLongestWord(/* sentence */) {
-  throw new Error('Not implemented');
+function findLongestWord(sentence) {
+  return sentence.split(' ').sort((a, b) => b.length - a.length)[0];
 }
 
 /**
@@ -390,7 +397,19 @@ function reverseWords(str) {
  *   invertCase('12345') => '12345'
  */
 function invertCase(str) {
-  return str;
+  return str
+    .split(' ')
+    .map((word) => {
+      return word
+        .split('')
+        .map((char) => {
+          return char.charCodeAt() < 97
+            ? char.toLowerCase()
+            : char.toUpperCase();
+        })
+        .join('');
+    })
+    .join(' ');
 }
 
 /**
@@ -474,8 +493,18 @@ function extractEmails(str) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
+function encodeToRot13(str) {
+  return str
+    .split('')
+    .map((e) => {
+      if (e.charCodeAt() < 65 || e.charCodeAt() > 122) {
+        return e;
+      }
+      return String.fromCharCode(
+        e.charCodeAt() + (e.toLowerCase() <= 'm' ? 13 : -13)
+      );
+    })
+    .join('');
 }
 
 /**
@@ -502,8 +531,31 @@ function encodeToRot13(/* str */) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(value) {
+  const points = {
+    A: 0,
+    2: 1,
+    3: 2,
+    4: 3,
+    5: 4,
+    6: 5,
+    7: 6,
+    8: 7,
+    9: 8,
+    10: 9,
+    J: 10,
+    Q: 11,
+    K: 12,
+  };
+
+  const startIndex = {
+    '♣': 0,
+    '♦': 13,
+    '♥': 26,
+    '♠': 39,
+  };
+
+  return startIndex[value.slice(-1)] + points[value.slice(0, -1)];
 }
 
 module.exports = {
